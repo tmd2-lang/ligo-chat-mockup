@@ -1,0 +1,126 @@
+/* Landing page only. Same dark review chrome as /screens and /design. */
+
+.ix-stage {
+  min-height: 100vh;
+  background: #14110d;
+  color: #f6f5f4;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 24px;
+  font-family: -apple-system, "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
+}
+
+.ix-wrap {
+  max-width: 620px;
+  width: 100%;
+}
+
+.ix-mark {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.ix-mark b {
+  color: #f5d783;
+  font-weight: 600;
+}
+
+.ix-dot {
+  width: 4px;
+  height: 4px;
+  border-radius: 99px;
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.ix-title {
+  margin: 22px 0 0;
+  font-family: "Bricolage Grotesque", Georgia, serif;
+  font-weight: 600;
+  font-size: 40px;
+  line-height: 1.12;
+  letter-spacing: -0.02em;
+  color: #fff;
+}
+
+.ix-title-faint {
+  color: rgba(255, 255, 255, 0.42);
+}
+
+.ix-lede {
+  margin: 18px 0 0;
+  font-size: 15px;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.ix-links {
+  margin-top: 30px;
+  display: grid;
+  gap: 10px;
+}
+
+.ix-link {
+  display: grid;
+  gap: 3px;
+  padding: 16px 18px;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.04);
+  color: #fff;
+  font-size: 15px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background-color 140ms ease, border-color 140ms ease;
+}
+
+.ix-link:hover {
+  background: rgba(255, 255, 255, 0.07);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.ix-link-primary {
+  background: rgba(249, 115, 22, 0.12);
+  border-color: rgba(249, 115, 22, 0.4);
+}
+
+.ix-link-primary:hover {
+  background: rgba(249, 115, 22, 0.18);
+  border-color: rgba(249, 115, 22, 0.6);
+}
+
+.ix-link:focus-visible {
+  outline: 2px solid #f97316;
+  outline-offset: 2px;
+}
+
+.ix-link-sub {
+  font-size: 13px;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.ix-foot {
+  margin: 26px 0 0;
+  font-size: 13px;
+  line-height: 1.55;
+  color: rgba(255, 255, 255, 0.32);
+}
+
+@media (max-width: 640px) {
+  .ix-title {
+    font-size: 30px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ix-link {
+    transition: none;
+  }
+}

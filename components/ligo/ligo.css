@@ -1,0 +1,608 @@
+/* ============================================================
+   Ligo ported primitives — interaction states only.
+
+   Layout and color live inline in primitives.tsx (mirroring the
+   RN StyleSheet values 1:1, so a diff against eventsUi.tsx stays
+   readable). This file carries only what inline styles can't do:
+   hover, active, and focus-visible.
+
+   Scoped under .ligo-ported so nothing here can leak into the
+   existing Cole demo, onboarding, or waitlist pages.
+   ============================================================ */
+
+.ligo-ported *,
+.ligo-ported *::before,
+.ligo-ported *::after {
+  box-sizing: border-box;
+}
+
+/* Reset the UA button/input chrome the RN components never had. */
+.ligo-ported button {
+  margin: 0;
+  border: none;
+  background: none;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  text-align: inherit;
+}
+
+.ligo-ported input {
+  margin: 0;
+  border: none;
+  background: none;
+  font: inherit;
+  color: inherit;
+}
+
+.ligo-ported input:focus {
+  outline: none;
+}
+
+/* RN's activeOpacity, as a web press state. */
+.ligo-pressable {
+  transition: opacity 120ms ease;
+}
+.ligo-pressable:hover {
+  opacity: 0.85;
+}
+.ligo-pressable:active {
+  opacity: 0.7;
+}
+.ligo-pressable:disabled {
+  cursor: default;
+  opacity: 1;
+}
+
+/* One visible focus ring for every interactive element. RN has no
+   equivalent — this is a web affordance the port has to add rather
+   than inherit. */
+.ligo-ported :focus-visible {
+  outline: 2px solid #f97316;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* The search field's placeholder colour (EV.textSoft). */
+.ligo-search-input::placeholder {
+  color: #a4a4a4;
+  opacity: 1;
+}
+
+/* Tab bar: the icons are flat PNG exports, recoloured via mask so a
+   single asset serves both active and inactive states — the web
+   equivalent of RN's <Image tintColor>. */
+.ligo-tab-glyph {
+  width: 24px;
+  height: 24px;
+  display: block;
+  -webkit-mask-position: center;
+  mask-position: center;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-size: contain;
+  mask-size: contain;
+  transition: background-color 140ms ease;
+}
+
+/* Horizontal carousels — match the app's snap feel, hide the bar. */
+.ligo-carousel {
+  display: flex;
+  gap: 16px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  padding-inline: 20px;
+}
+.ligo-carousel::-webkit-scrollbar {
+  display: none;
+}
+.ligo-carousel > * {
+  scroll-snap-align: start;
+  flex: 0 0 auto;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ligo-pressable,
+  .ligo-tab-glyph {
+    transition: none;
+  }
+}
+
+/* ============================================================
+   Ported screens.
+
+   RN's EvScreen is a flex column whose header stays put and whose
+   body scrolls (ScrollView / SectionList / FlatList). These two
+   classes reproduce that split on the web so the brand row, toggle,
+   and search bar behave the way they do in the app.
+   ============================================================ */
+
+.ligo-screen-top {
+  flex-shrink: 0;
+}
+
+.ligo-screen-scroll {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* ============================================================
+   Feed — the proposed Chat-tab replacement.
+
+   Built from the same EV vocabulary as Events so the two read as
+   one app: white cards on EV.bg, hairline EV.border, the same
+   type sizes. Intentionally NOT a Twitter timeline — cards are
+   discrete surfaces, not a dense border-separated stream.
+   ============================================================ */
+
+.ligo-feed-filters {
+  margin-top: 14px;
+  padding-bottom: 2px;
+  gap: 8px;
+}
+
+.ligo-ported .ligo-feed-chip {
+  border-radius: 999px;
+  padding: 7px 14px;
+  font-size: 13px;
+  font-weight: 500;
+  white-space: nowrap;
+  transition: background-color 140ms ease, color 140ms ease;
+}
+
+.ligo-feed-list {
+  list-style: none;
+  margin: 0;
+  padding: 14px 16px 0;
+  display: grid;
+  gap: 12px;
+}
+
+.ligo-feed-card {
+  background: #fff;
+  border: 1px solid #ebebeb;
+  border-radius: 20px;
+  padding: 14px;
+  display: grid;
+  gap: 10px;
+}
+
+.ligo-feed-author {
+  font-size: 15px;
+  font-weight: 600;
+  color: #171717;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ligo-feed-kind {
+  font-size: 11px;
+  font-weight: 600;
+  border-radius: 999px;
+  padding: 2px 8px;
+  white-space: nowrap;
+}
+
+.ligo-feed-time {
+  font-size: 12px;
+  color: #a4a4a4;
+}
+
+/* System-generated activity reads as a log line, not prose. */
+.ligo-feed-activity {
+  margin: 0;
+  font-size: 14px;
+  color: #5c5c5c;
+}
+
+.ligo-feed-title {
+  margin: 0;
+  font-size: 17px;
+  font-weight: 400;
+  line-height: 1.3;
+  letter-spacing: -0.2px;
+  color: #171717;
+}
+
+.ligo-feed-body {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.47;
+  color: #525866;
+}
+
+.ligo-feed-image {
+  width: 100%;
+  max-height: 320px;
+  object-fit: cover;
+  border-radius: 14px;
+  display: block;
+}
+
+.ligo-feed-actions {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding-top: 2px;
+}
+
+.ligo-ported .ligo-feed-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  transition: color 140ms ease;
+}
+
+.ligo-ported .ligo-feed-cta {
+  margin-left: auto;
+  font-size: 13px;
+  font-weight: 600;
+  color: #9a3412;
+  background: rgba(249, 115, 22, 0.12);
+  border-radius: 999px;
+  padding: 6px 14px;
+}
+
+/* --- composer sheet --- */
+
+.ligo-sheet-scrim {
+  position: absolute;
+  inset: 0;
+  background: rgba(10, 9, 7, 0.4);
+  display: flex;
+  align-items: flex-end;
+  z-index: 40;
+}
+
+.ligo-sheet {
+  width: 100%;
+  background: #fff;
+  border-radius: 24px 24px 0 0;
+  padding: 10px 20px calc(20px + env(safe-area-inset-bottom, 0px));
+  display: grid;
+  gap: 10px;
+  max-height: 88%;
+  overflow-y: auto;
+}
+
+.ligo-sheet-grip {
+  width: 36px;
+  height: 4px;
+  border-radius: 999px;
+  background: #e5e5e0;
+  margin: 0 auto 6px;
+}
+
+.ligo-sheet-title {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 400;
+  color: #171717;
+}
+
+.ligo-sheet-types {
+  display: grid;
+  gap: 8px;
+}
+
+.ligo-ported .ligo-sheet-type {
+  display: grid;
+  gap: 2px;
+  text-align: left;
+  border: 1px solid #ebebeb;
+  border-radius: 14px;
+  padding: 10px 14px;
+  font-size: 14px;
+  transition: background-color 140ms ease, border-color 140ms ease;
+}
+
+.ligo-sheet-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #a4a4a4;
+  margin-top: 2px;
+}
+
+.ligo-sheet-input {
+  border: 1px solid #ebebeb;
+  border-radius: 12px;
+  padding: 11px 13px;
+  font-size: 15px;
+  color: #171717;
+  background: #fff;
+  width: 100%;
+  font-family: inherit;
+}
+
+.ligo-sheet-textarea {
+  resize: none;
+  line-height: 1.45;
+}
+
+.ligo-sheet-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 6px;
+}
+
+.ligo-ported .ligo-sheet-cancel {
+  flex: 1;
+  border: 1px solid #d6d5cd;
+  border-radius: 999px;
+  padding: 13px;
+  font-size: 15px;
+  font-weight: 600;
+  color: #171717;
+  background: #fff;
+}
+
+.ligo-ported .ligo-sheet-post {
+  flex: 1;
+  border-radius: 999px;
+  padding: 13px;
+  font-size: 15px;
+  font-weight: 700;
+  color: #fff;
+  background: #171717;
+}
+
+.ligo-ported .ligo-sheet-post:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ligo-feed-chip,
+  .ligo-feed-action,
+  .ligo-sheet-type {
+    transition: none;
+  }
+}
+
+/* --- club detail sheet (ClubDetail.tsx) --- */
+
+.ligo-club-sheet {
+  width: 100%;
+  background: #fff;
+  border-radius: 28px 28px 0 0;
+  padding: 10px 24px calc(40px + env(safe-area-inset-bottom, 0px));
+  max-height: 86%;
+  display: flex;
+  flex-direction: column;
+  outline: none;
+  transform: translateY(12px);
+  opacity: 0;
+  transition: transform 220ms ease, opacity 220ms ease;
+}
+
+.ligo-club-sheet.is-in {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.ligo-club-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  margin-bottom: 20px;
+  flex-shrink: 0;
+}
+
+.ligo-club-headertitle {
+  font-size: 16px;
+  font-weight: 600;
+  color: #171717;
+}
+
+.ligo-ported .ligo-club-iconbtn {
+  width: 40px;
+  height: 40px;
+  border-radius: 20px;
+  background: rgba(163, 163, 163, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.ligo-club-body {
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  min-height: 0;
+}
+
+.ligo-club-photo {
+  width: 100%;
+  height: 200px;
+  border-radius: 20px;
+  object-fit: cover;
+  display: block;
+  flex-shrink: 0;
+}
+
+.ligo-club-photo-fallback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 44px;
+  font-weight: 800;
+}
+
+.ligo-club-category {
+  margin: 14px 0 0;
+  font-size: 13px;
+  color: #5c5c5c;
+}
+
+.ligo-club-name {
+  margin: 4px 0 0;
+  font-size: 22px;
+  font-weight: 400;
+  letter-spacing: -0.3px;
+  color: #171717;
+}
+
+.ligo-club-visibility {
+  margin: 8px 0 0;
+  font-size: 13px;
+  color: #a4a4a4;
+}
+
+.ligo-club-location {
+  margin: 4px 0 0;
+  font-size: 14px;
+  color: #5c5c5c;
+}
+
+.ligo-club-section {
+  align-self: stretch;
+  margin-top: 24px;
+  text-align: left;
+}
+
+.ligo-club-label {
+  margin: 0 0 12px;
+  font-size: 17px;
+  font-weight: 400;
+  letter-spacing: -0.2px;
+  color: #171717;
+}
+
+.ligo-club-plainlabel {
+  margin: 0 0 12px;
+  font-size: 17px;
+  color: #5c5c5c;
+}
+
+.ligo-club-description {
+  margin: 0;
+  font-size: 17px;
+  line-height: 25px;
+  color: #171717;
+}
+
+/* The sheet has its own 24px gutter, so this carousel doesn't need one. */
+.ligo-club-events {
+  padding-inline: 0;
+}
+
+.ligo-club-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 24px;
+  align-self: stretch;
+}
+
+.ligo-ported .ligo-club-follow {
+  border-radius: 999px;
+  padding: 16px 20px;
+  font-size: 15px;
+  font-weight: 600;
+  color: #171717;
+  white-space: nowrap;
+  transition: background-color 140ms ease;
+}
+
+.ligo-ported .ligo-club-join {
+  flex: 1;
+  border-radius: 999px;
+  padding: 16px 32px;
+  font-size: 15px;
+  font-weight: 600;
+  color: #fff;
+  background: #171717;
+  white-space: nowrap;
+}
+
+.ligo-ported .ligo-club-join.is-pending {
+  background: rgba(163, 163, 163, 0.16);
+  color: #5c5c5c;
+}
+
+.ligo-club-followhint {
+  margin: 12px 0 0;
+  font-size: 13px;
+  line-height: 1.5;
+  color: #a4a4a4;
+  text-align: left;
+  align-self: stretch;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ligo-club-sheet {
+    transition: none;
+    transform: none;
+    opacity: 1;
+  }
+}
+
+/* --- success modal (EvSuccessModal) --- */
+
+.ligo-success-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(51, 51, 51, 0.24);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  z-index: 60;
+}
+
+.ligo-success-card {
+  background: #fff;
+  border-radius: 36px;
+  padding: 24px 24px 32px;
+  width: 100%;
+  max-width: 362px;
+  text-align: center;
+}
+
+.ligo-success-badge {
+  width: 64px;
+  height: 64px;
+  border-radius: 32px;
+  background: #71c07f;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+}
+
+.ligo-success-title {
+  margin: 16px 0 0;
+  font-size: 20px;
+  font-weight: 400;
+  letter-spacing: -0.3px;
+  color: #171717;
+}
+
+.ligo-success-body {
+  margin: 8px 0 0;
+  font-size: 15px;
+  line-height: 22px;
+  color: #5c5c5c;
+}
+
+.ligo-ported .ligo-success-btn {
+  margin-top: 24px;
+  width: 100%;
+  background: #171717;
+  color: #fff;
+  border-radius: 999px;
+  padding: 16px;
+  font-size: 15px;
+  font-weight: 600;
+}

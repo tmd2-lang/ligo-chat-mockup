@@ -1,0 +1,458 @@
+/* ============================================================
+   /design — specimen-sheet chrome.
+
+   This is review furniture, not product UI. Kept visually plain
+   and prefixed .dr-* so it reads as "documentation about the
+   app" rather than "part of the app", and so nothing here can
+   collide with the ported .ligo-* styles sitting next to it.
+   ============================================================ */
+
+.dr-stage {
+  min-height: 100vh;
+  background: #14110d;
+  color: #f6f5f4;
+  padding: 32px 24px 64px;
+  font-family: -apple-system, "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
+}
+
+.dr-head {
+  max-width: 1180px;
+  margin: 0 auto 28px;
+}
+
+.dr-head-mark {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.dr-head-mark b {
+  color: #f5d783;
+  font-weight: 600;
+}
+
+.dr-dot {
+  width: 4px;
+  height: 4px;
+  border-radius: 99px;
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.dr-head-sub {
+  margin: 10px 0 0;
+  max-width: 62ch;
+  font-size: 14px;
+  line-height: 1.55;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.dr-head-sub code {
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 13px;
+}
+
+.dr-split {
+  max-width: 1180px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 402px minmax(0, 1fr);
+  gap: 40px;
+  align-items: start;
+}
+
+.dr-phone {
+  position: sticky;
+  top: 32px;
+}
+
+/* The phone's own scroll region. */
+.dr-scroll {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+}
+
+.dr-specs {
+  display: grid;
+  gap: 20px;
+  min-width: 0;
+}
+
+.dr-panel {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  padding: 20px;
+  min-width: 0;
+}
+
+.dr-panel-title {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+  color: #fff;
+}
+
+.dr-panel-note {
+  margin: 6px 0 0;
+  max-width: 70ch;
+  font-size: 13px;
+  line-height: 1.55;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.dr-panel-body {
+  margin-top: 16px;
+  min-width: 0;
+}
+
+/* --- swatches --- */
+
+.dr-swatches {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 10px;
+}
+
+.dr-swatch {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+}
+
+.dr-swatch-chip {
+  position: relative;
+  display: block;
+  height: 44px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  overflow: hidden;
+}
+
+.dr-swatch-name {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.85);
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.dr-swatch-val {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.4);
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* --- key/value --- */
+
+.dr-kv {
+  margin: 14px 0 0;
+  display: grid;
+  gap: 6px;
+}
+
+.dr-kv-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+}
+
+.dr-kv-row dt {
+  width: 76px;
+  flex-shrink: 0;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.dr-kv-row dd {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.dr-chip {
+  width: 13px;
+  height: 13px;
+  border-radius: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  display: inline-block;
+  flex-shrink: 0;
+}
+
+/* --- tab bar demo (needs a light ground) --- */
+
+.dr-tabdemo {
+  background: #f6f5f4;
+  border-radius: 12px;
+  overflow: hidden;
+  max-width: 402px;
+}
+
+/* --- table --- */
+
+.dr-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.dr-table th,
+.dr-table td {
+  text-align: left;
+  padding: 8px 10px 8px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+  vertical-align: middle;
+}
+
+.dr-table thead th {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: rgba(255, 255, 255, 0.35);
+}
+
+.dr-table tbody th {
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.dr-table td {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.dr-table td code {
+  font-size: 12px;
+  margin-left: 7px;
+}
+
+/* --- accents --- */
+
+.dr-accent-demo {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.dr-accent-pill {
+  border-radius: 999px;
+  padding: 5px 12px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+/* --- type --- */
+
+.dr-type {
+  display: grid;
+  gap: 12px;
+  background: #f6f5f4;
+  border-radius: 12px;
+  padding: 18px;
+}
+
+.dr-type-row {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+}
+
+.dr-type-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #a4a4a4;
+}
+
+.dr-type-row > span:last-child {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* --- scales --- */
+
+.dr-scale-group + .dr-scale-group {
+  margin-top: 18px;
+}
+
+.dr-scale-title {
+  display: block;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: rgba(255, 255, 255, 0.35);
+  margin-bottom: 10px;
+}
+
+.dr-scale {
+  display: grid;
+  gap: 6px;
+}
+
+.dr-scale-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.dr-scale-bar {
+  height: 10px;
+  border-radius: 2px;
+  background: #f97316;
+  flex-shrink: 0;
+}
+
+.dr-scale-item code,
+.dr-radius-item code,
+.dr-elev-box {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.dr-radii {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+}
+
+.dr-radius-item {
+  display: grid;
+  gap: 5px;
+  justify-items: center;
+}
+
+.dr-radius-box {
+  width: 52px;
+  height: 52px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  display: block;
+}
+
+.dr-elev {
+  display: flex;
+  gap: 14px;
+  background: #f6f5f4;
+  border-radius: 12px;
+  padding: 22px;
+}
+
+.dr-elev-box {
+  background: #fff;
+  border-radius: 16px;
+  padding: 18px 22px;
+  color: #5c5c5c;
+  font-size: 13px;
+}
+
+/* --- house primitives --- */
+
+.dr-stack {
+  display: grid;
+  gap: 14px;
+  background: #fafaf8;
+  border-radius: 12px;
+  padding: 18px;
+}
+
+.dr-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+/* --- notes --- */
+
+.dr-notes {
+  margin: 0;
+  padding-left: 18px;
+  display: grid;
+  gap: 9px;
+  font-size: 13px;
+  line-height: 1.55;
+  color: rgba(255, 255, 255, 0.55);
+  max-width: 74ch;
+}
+
+.dr-notes b {
+  color: rgba(255, 255, 255, 0.85);
+  font-weight: 600;
+}
+
+.dr-notes code {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.72);
+}
+
+/* ============================================================
+   Narrow viewport: the phone frame stops making sense, so the
+   ported UI fills the screen like a real mobile app and the
+   specimen sheet stacks underneath it.
+   ============================================================ */
+
+@media (max-width: 900px) {
+  .dr-split {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 28px;
+  }
+
+  .dr-phone {
+    position: static;
+  }
+
+  /* Drop the device chrome and go full-bleed. */
+  .dr-phone .ios-device {
+    width: 100% !important;
+    height: 78vh !important;
+    min-height: 560px;
+    border-radius: 20px;
+    box-shadow: none;
+  }
+
+  /* Full-bleed means it's pretending to be the real app, so the
+     simulated iOS chrome (island, status bar, home indicator) goes —
+     the browser's own is right there. */
+  .dr-phone .ios-island,
+  .dr-phone .ios-statusbar,
+  .dr-phone .ios-homeind {
+    display: none;
+  }
+
+  .dr-phone .dr-scroll {
+    padding-top: 12px !important;
+  }
+}
+
+@media (max-width: 640px) {
+  .dr-stage {
+    padding: 24px 14px 48px;
+  }
+
+  .dr-phone .ios-device {
+    height: 86vh !important;
+    border-radius: 14px;
+  }
+
+  .dr-swatches {
+    grid-template-columns: repeat(auto-fill, minmax(122px, 1fr));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dr-stage * {
+    animation: none !important;
+    transition: none !important;
+  }
+}

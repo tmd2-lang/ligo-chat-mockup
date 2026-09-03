@@ -6,9 +6,13 @@ Nobody uses the Chat tab. ASA has close to 100 members on the platform and has
 never touched it. This is a working prototype of what could go in that slot
 instead: a feed of what's actually happening at Georgetown.
 
-**It is a prototype, not an implementation.** Everything is static — no
-Appwrite, no Supabase, no network calls of any kind. Every screen reads from a
+**It is a prototype, not an implementation.** The app itself is static — no
+Appwrite, no Supabase, no runtime network calls. Every screen reads from a
 local file.
+
+Some of that local content is real: a separate script (`scripts/sync-test.mjs`,
+run by hand) pulls live data from four public Georgetown sources into a
+committed snapshot. See [Live source sync](#live-source-sync).
 
 ---
 
@@ -26,6 +30,43 @@ Then open <http://localhost:3000>.
 | `/` | Landing page |
 | `/screens` | **The prototype.** Feed vs Chat, with the review toggles |
 | `/design` | Design reference — tokens and components from the live app |
+
+---
+
+## Live source sync
+
+The feed can render either content I wrote or content pulled from real
+Georgetown sources. Flip **Content** on `/screens` to compare them.
+
+```bash
+node scripts/sync-test.mjs
+```
+
+No dependencies. Four public GET requests, writes one local JSON snapshot,
+prints a report. It does not touch Appwrite, Supabase, or any live service.
+
+| Source | Endpoint | Needs permission from |
+|---|---|---|
+| The Hoya | `thehoya.com/wp-json/wp/v2/posts` | Nobody |
+| The Georgetown Voice | `georgetownvoice.com/wp-json/wp/v2/posts` | Nobody |
+| Georgetown Athletics | `guhoyas.com/calendar.ashx/calendar.ics` | Nobody |
+| University events | `events.georgetown.edu/live/ical/events` | Nobody |
+| Club Instagram | `graph.instagram.com/…` | **Meta + each club** |
+
+Instagram cannot be fetched — it needs Meta to approve
+`instagram_business_basic` and each club to connect via OAuth. Those posts
+are simulated in the exact shape the extractor returns (four facts, no
+caption, no photo) and are visibly marked as such in the feed.
+
+The page itself never fetches anything. It reads the committed snapshot, so
+the prototype stays static and offline.
+
+See [docs/FEED_SYNC_FINDINGS.md](docs/FEED_SYNC_FINDINGS.md) for the full
+write-up: measured numbers per source, scheduling, and the data problems
+that only showed up by running it — duplicate events posted by several
+departments, athletics arriving from two feeds at once, and a timezone bug
+where the university calendar publishes local time while athletics
+publishes UTC.
 
 ---
 

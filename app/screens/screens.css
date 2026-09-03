@@ -134,3 +134,47 @@
 .sc-callout b {
   color: #fff;
 }
+
+/* --- real-data note --- */
+
+.sc-realnote {
+  border: 1px solid rgba(113, 192, 127, 0.3);
+  background: rgba(113, 192, 127, 0.07);
+  border-radius: 12px;
+  padding: 12px 14px;
+}
+
+.sc-realnote-head {
+  margin: 0;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #71c07f;
+}
+
+.sc-realnote-list {
+  margin: 8px 0 0;
+  padding-left: 16px;
+  display: grid;
+  gap: 5px;
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.sc-realnote-list b {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.sc-realnote-list code {
+  font-size: 11.5px;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.sc-realnote-punch {
+  margin: 10px 0 0;
+  font-size: 12.5px;
+  line-height: 1.55;
+  color: rgba(255, 255, 255, 0.72);
+}

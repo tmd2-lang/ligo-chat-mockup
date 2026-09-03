@@ -28,7 +28,11 @@ export type FeedKind =
   | "hoya"
   | "athletics"
   | "alumni"
-  | "student";
+  | "student"
+  // Added for real ingested content — the university calendar's own
+  // categories don't map onto the club-shaped kinds above.
+  | "lecture"
+  | "campus_event";
 
 export type Season = "rush" | "quiet";
 export type Publishing = "orgs" | "community";
@@ -49,9 +53,27 @@ export type FeedPost = {
   imageAlt?: string;
   /** Inline call to action, e.g. an RSVP or a donation link. */
   action?: string;
+  /** Canonical source URL. Present on everything ingested; opens out. */
+  link?: string;
+  /** ISO start time, for events that can be added to a calendar. */
+  startsAt?: string;
+  /** Venue, used in the generated calendar entry. */
+  venue?: string;
   likes: number;
+  /**
+   * Overrides the chip text from KIND_META. Needed because two papers
+   * share one kind — without this every Voice post was chipped
+   * "The Hoya".
+   */
+  chipLabel?: string;
   /** Which season(s) this post appears in. */
   seasons: Season[];
+  /**
+   * True for content nobody actually published — currently only the
+   * Instagram stand-ins, since that API is blocked. Rendered with a
+   * visible marker so a simulated post can never be read as a real one.
+   */
+  simulated?: boolean;
 };
 
 /** Display metadata per kind — label, and the filter chip it belongs to. */
@@ -69,6 +91,8 @@ export const KIND_META: Record<
   athletics: { label: "Athletics", filter: "campus" },
   alumni: { label: "Alumni", filter: "campus" },
   student: { label: "Student", filter: "students" },
+  lecture: { label: "Lecture", filter: "campus" },
+  campus_event: { label: "Campus event", filter: "campus" },
 };
 
 export type FilterId =

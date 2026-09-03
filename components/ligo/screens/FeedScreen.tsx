@@ -43,6 +43,7 @@ import {
   type Season,
   type Publishing,
 } from "@/lib/ligo/mockFeed";
+import { realPosts } from "@/lib/ligo/realFeed";
 
 type Scope = "Following" | "All";
 
@@ -50,11 +51,20 @@ export function FeedScreen({
   season,
   publishing,
   following,
+  dataSource = "authored",
 }: {
   season: Season;
   publishing: Publishing;
   /** Clubs the user follows — set from the club sheet's Follow button. */
   following: Set<string>;
+  /**
+   * "authored" = the posts I wrote, which are uniformly well-formed.
+   * "real"     = what actually comes out of The Hoya's API and the
+   *              athletics calendar, plus Instagram in its real
+   *              four-facts-no-photo shape. The season and publishing
+   *              toggles don't apply to real data — it is what it is.
+   */
+  dataSource?: "authored" | "real";
 }) {
   const [scope, setScope] = useState<Scope>("All");
   const [filter, setFilter] = useState<FilterId>("all");
@@ -63,24 +73,29 @@ export function FeedScreen({
   const [composerOpen, setComposerOpen] = useState(false);
   const [drafts, setDrafts] = useState<FeedPost[]>([]);
 
+  const sourcePosts = useMemo(
+    () => (dataSource === "real" ? realPosts() : visiblePosts(season, publishing)),
+    [dataSource, season, publishing]
+  );
+
   const posts = useMemo(() => {
-    const base = [...drafts, ...visiblePosts(season, publishing)];
+    const base = [...drafts, ...sourcePosts];
     return base.filter((p) => {
       if (scope === "Following" && !following.has(p.author)) return false;
       if (filter !== "all" && KIND_META[p.kind].filter !== filter) return false;
       return true;
     });
-  }, [season, publishing, scope, filter, drafts, following]);
+  }, [sourcePosts, scope, filter, drafts, following]);
 
   /** Drop filter chips that would match nothing in the current state. */
   const availableFilters = useMemo(() => {
     const live = new Set(
-      [...drafts, ...visiblePosts(season, publishing)]
+      [...drafts, ...sourcePosts]
         .filter((p) => scope === "All" || following.has(p.author))
         .map((p) => KIND_META[p.kind].filter)
     );
     return FILTERS.filter((f) => f.id === "all" || live.has(f.id));
-  }, [season, publishing, scope, drafts, following]);
+  }, [sourcePosts, scope, drafts, following]);
 
   // A filter can go stale when the season or scope changes under it.
   React.useEffect(() => {
@@ -180,6 +195,58 @@ export function FeedScreen({
 }
 
 /* ------------------------------------------------------------------ */
+/* Add to calendar                                                     */
+/* ------------------------------------------------------------------ */
+
+/**
+ * Builds a real RFC 5545 file and hands it to the browser.
+ *
+ * Deliberately NOT an RSVP. RSVP implies Ligo owns a guest list, and for
+ * a scraped listing it doesn't — the ingestion spec's own rule is that a
+ * discovered event must never look like a partner event. "Add to
+ * calendar" makes no such claim: it just puts the thing on your phone.
+ */
+function icsEscape(v = "") {
+  return v.replace(/\\/g, "\\\\").replace(/;/g, "\\;").replace(/,/g, "\\,").replace(/\n/g, "\\n");
+}
+
+function toIcsStamp(d: Date) {
+  return d.toISOString().replace(/[-:]/g, "").replace(/\.\d{3}/, "");
+}
+
+function downloadIcs(post: FeedPost) {
+  if (!post.startsAt) return;
+  const start = new Date(post.startsAt);
+  const end = new Date(start.getTime() + 2 * 60 * 60 * 1000);
+  const lines = [
+    "BEGIN:VCALENDAR",
+    "VERSION:2.0",
+    "PRODID:-//Ligo//Campus Feed Prototype//EN",
+    "BEGIN:VEVENT",
+    `UID:${post.id}@ligo.prototype`,
+    `DTSTAMP:${toIcsStamp(new Date())}`,
+    `DTSTART:${toIcsStamp(start)}`,
+    `DTEND:${toIcsStamp(end)}`,
+    `SUMMARY:${icsEscape(post.title ?? "Georgetown event")}`,
+    post.venue ? `LOCATION:${icsEscape(post.venue)}` : null,
+    post.link ? `URL:${post.link}` : null,
+    `DESCRIPTION:${icsEscape(post.body ?? "")}`,
+    "END:VEVENT",
+    "END:VCALENDAR",
+  ].filter(Boolean);
+
+  const blob = new Blob([lines.join("\r\n")], { type: "text/calendar" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `${(post.title ?? "event").replace(/[^a-z0-9]+/gi, "-").toLowerCase()}.ics`;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
+/* ------------------------------------------------------------------ */
 /* Post                                                                */
 /* ------------------------------------------------------------------ */
 
@@ -201,7 +268,13 @@ function PostCard({
   const isSystem = post.authorType === "system";
 
   return (
-    <li className="ligo-feed-card">
+    <li className={`ligo-feed-card${post.simulated ? " is-simulated" : ""}`}>
+      {post.simulated && (
+        <p className="ligo-feed-sim">
+          Simulated — Instagram sync is blocked on Meta approval. Real shape,
+          invented wording.
+        </p>
+      )}
       <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
         <EvAvatarCircle label={post.author} color={accent} size={36} />
         <div style={{ flex: 1, minWidth: 0 }}>
@@ -217,7 +290,7 @@ function PostCard({
                 color: EV.textSub,
               }}
             >
-              {meta.label}
+              {post.chipLabel ?? meta.label}
             </span>
             <span className="ligo-feed-time">{post.timeAgo}</span>
           </div>
@@ -232,11 +305,19 @@ function PostCard({
       ) : null}
 
       {post.title && (
-        <h3
-          className="ligo-feed-title"
-          style={{ fontFamily: FONT_HEADLINE }}
-        >
-          {post.title}
+        <h3 className="ligo-feed-title" style={{ fontFamily: FONT_HEADLINE }}>
+          {post.link ? (
+            <a
+              className="ligo-feed-titlelink"
+              href={post.link}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {post.title}
+            </a>
+          ) : (
+            post.title
+          )}
         </h3>
       )}
 
@@ -276,13 +357,53 @@ function PostCard({
           <span>{saved ? "Saved" : "Save"}</span>
         </button>
 
-        {post.action && (
-          <span className="ligo-feed-cta" aria-hidden="true">
-            {post.action}
-          </span>
-        )}
+        {post.action && <PostAction post={post} />}
       </div>
     </li>
+  );
+}
+
+/**
+ * Three shapes, and the difference is honest:
+ *   - a link out to the source        (Read / Details / Get tickets)
+ *   - a generated calendar file       (Add to calendar)
+ *   - inert                           (RSVP on simulated content)
+ */
+function PostAction({ post }: { post: FeedPost }) {
+  const label = post.action ?? "";
+
+  if (label === "Add to calendar" && post.startsAt) {
+    return (
+      <button
+        type="button"
+        className="ligo-pressable ligo-feed-cta"
+        onClick={() => downloadIcs(post)}
+      >
+        {label}
+      </button>
+    );
+  }
+
+  if (post.link) {
+    return (
+      <a
+        className="ligo-pressable ligo-feed-cta"
+        href={post.link}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        {label}
+        <span style={{ marginLeft: 5, fontSize: 11 }} aria-hidden="true">↗</span>
+      </a>
+    );
+  }
+
+  // Nothing to open — simulated content, or an authored post with no
+  // source. Rendered flat so it doesn't invite a click that does nothing.
+  return (
+    <span className="ligo-feed-cta is-inert" aria-hidden="true">
+      {label}
+    </span>
   );
 }
 

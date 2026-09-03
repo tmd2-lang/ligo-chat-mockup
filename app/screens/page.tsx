@@ -20,6 +20,7 @@ import { EventsClubsScreen } from "@/components/ligo/screens/EventsClubsScreen";
 import { ChatHubScreen } from "@/components/ligo/screens/ChatHubScreen";
 import { FeedScreen } from "@/components/ligo/screens/FeedScreen";
 import type { Season, Publishing } from "@/lib/ligo/mockFeed";
+import { SYNC_META, realStats } from "@/lib/ligo/realFeed";
 import { EvScreen } from "@/components/ligo/primitives";
 import { EV, FONT_HEADLINE } from "@/lib/ligo/tokens";
 import "@/components/ligo/ligo.css";
@@ -32,6 +33,7 @@ export default function RealScreens() {
   /** Which screen occupies the left slot — the actual proposal. */
   const [leftSlot, setLeftSlot] = useState<"feed" | "chat">("feed");
   const [season, setSeason] = useState<Season>("rush");
+  const [dataSource, setDataSource] = useState<"authored" | "real">("authored");
   /* Follow state lives here so the club sheet's Follow button and the
      feed's Following tab are the same thing, not two mock states. */
   const [following, setFollowing] = useState<Set<string>>(
@@ -72,7 +74,12 @@ export default function RealScreens() {
             <div className="sc-phone-inner">
               {tab === "chat" &&
                 (leftSlot === "feed" ? (
-                  <FeedScreen season={season} publishing={publishing} following={following} />
+                  <FeedScreen
+                    season={season}
+                    publishing={publishing}
+                    following={following}
+                    dataSource={dataSource}
+                  />
                 ) : (
                   <ChatHubScreen populated={chatPopulated} />
                 ))}
@@ -122,6 +129,22 @@ export default function RealScreens() {
 
               {leftSlot === "feed" ? (
                 <>
+                  <Seg
+                    legend="Content"
+                    value={dataSource}
+                    onChange={(v) => {
+                      setDataSource(v as "authored" | "real");
+                      setTab("chat");
+                    }}
+                    options={[
+                      { id: "authored", label: "Written by me" },
+                      { id: "real", label: "Real sources" },
+                    ]}
+                    hint="Real pulls from a live snapshot of The Hoya's API and the Georgetown athletics calendar. Season and posting rules don't apply to it — it is what it is."
+                  />
+
+                  {dataSource === "real" && <RealDataNote />}
+
                   <Seg
                     legend="Season"
                     value={season}
@@ -271,6 +294,55 @@ export default function RealScreens() {
         </div>
       </div>
     </main>
+  );
+}
+
+/** What the live sources actually returned, stated rather than implied. */
+function RealDataNote() {
+  const s = realStats();
+  const when = new Date(SYNC_META.fetchedAt).toLocaleString("en-US", {
+    month: "short", day: "numeric", hour: "numeric", minute: "2-digit",
+  });
+  return (
+    <div className="sc-realnote">
+      <p className="sc-realnote-head">
+        Pulled {when} · {s.total} items
+      </p>
+      <ul className="sc-realnote-list">
+        <li>
+          <b>University calendar</b> — {s.bySource.calendar} upcoming events
+          (LiveWhale). 60% carry their own image, plus locations and real
+          categories: Lecture, Career, Research, Student Events.
+        </li>
+        <li>
+          <b>The Hoya</b> — {s.bySource.hoya} posts, WordPress API, 93% with a
+          featured image.
+        </li>
+        <li>
+          <b>The Voice</b> — {s.bySource.voice} posts, same WordPress setup.
+          Near-zero extra work for a second paper.
+        </li>
+        <li>
+          <b>Athletics</b> — {s.bySource.athletics} events from Sidearm, real
+          scores and ticket links. Zero artwork.
+        </li>
+        <li>
+          <b>Instagram</b> — not fetchable. Blocked on Meta approving{" "}
+          <code>instagram_business_basic</code>. Shown in its real shape: four
+          facts, no caption, no photo.
+        </li>
+      </ul>
+      <p className="sc-realnote-punch">
+        {s.imagePct}% have an image, {s.prosePct}% have real body copy — much
+        better than the Hoya alone. Athletics and Instagram are the two sources
+        with no art at all; those are what the Midjourney fallback is for.
+      </p>
+      <p className="sc-realnote-punch">
+        The calendar alone is {s.bySource.calendar} of {s.total} items, so it
+        would own the feed unranked — the same problem the Hoya had before it
+        was added. The feed caps it at 12 as a stand-in for real ranking.
+      </p>
+    </div>
   );
 }
 

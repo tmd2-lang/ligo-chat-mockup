@@ -606,3 +606,53 @@
   font-size: 15px;
   font-weight: 600;
 }
+
+/* Simulated content: the Instagram stand-ins, which nobody published.
+   Marked so a made-up post can never be mistaken for a real pull. */
+.ligo-feed-card.is-simulated {
+  border-style: dashed;
+  border-color: #d6d5cd;
+  background: #fbfbfa;
+}
+
+.ligo-feed-sim {
+  margin: 0;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.45;
+  color: #a4a4a4;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+/* Actions are real controls now: a link out, or a generated .ics.
+   `.is-inert` is the third case — nothing to open, so it must not
+   look clickable. */
+.ligo-ported a.ligo-feed-cta,
+.ligo-ported button.ligo-feed-cta {
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color 140ms ease;
+}
+
+.ligo-ported a.ligo-feed-cta:hover,
+.ligo-ported button.ligo-feed-cta:hover {
+  background: rgba(249, 115, 22, 0.2);
+}
+
+.ligo-feed-cta.is-inert {
+  opacity: 0.55;
+  cursor: default;
+}
+
+.ligo-feed-titlelink {
+  color: inherit;
+  text-decoration: none;
+}
+
+.ligo-feed-titlelink:hover {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}

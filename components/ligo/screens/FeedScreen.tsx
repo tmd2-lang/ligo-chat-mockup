@@ -59,10 +59,9 @@ export function FeedScreen({
   following: Set<string>;
   /**
    * "authored" = the posts I wrote, which are uniformly well-formed.
-   * "real"     = what actually comes out of The Hoya's API and the
-   *              athletics calendar, plus Instagram in its real
-   *              four-facts-no-photo shape. The season and publishing
-   *              toggles don't apply to real data — it is what it is.
+   * "real"     = what actually comes out of The Hoya, Voice, athletics,
+   *              university calendar, and Instagram Business Discovery
+   *              snapshots. Season/publishing toggles do not rewrite it.
    */
   dataSource?: "authored" | "real";
 }) {
@@ -271,12 +270,22 @@ function PostCard({
     <li className={`ligo-feed-card${post.simulated ? " is-simulated" : ""}`}>
       {post.simulated && (
         <p className="ligo-feed-sim">
-          Simulated — Instagram sync is blocked on Meta approval. Real shape,
-          invented wording.
+          Simulated fallback content — invented wording for layout review.
         </p>
       )}
       <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-        <EvAvatarCircle label={post.author} color={accent} size={36} />
+        {post.avatar ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            className="ligo-feed-avatar"
+            src={post.avatar}
+            alt=""
+            width={36}
+            height={36}
+          />
+        ) : (
+          <EvAvatarCircle label={post.author} color={accent} size={36} />
+        )}
         <div style={{ flex: 1, minWidth: 0 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
             <span className="ligo-feed-author">{post.author}</span>
@@ -324,12 +333,19 @@ function PostCard({
       {!isSystem && <p className="ligo-feed-body">{post.body}</p>}
 
       {post.image && (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img
-          className="ligo-feed-image"
-          src={post.image}
-          alt={post.imageAlt ?? ""}
-        />
+        <div className="ligo-feed-media">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            className="ligo-feed-image"
+            src={post.image}
+            alt={post.imageAlt ?? ""}
+          />
+          {post.mediaType && post.mediaType !== "IMAGE" && (
+            <span className="ligo-feed-media-badge">
+              {post.mediaType === "VIDEO" ? "Reel" : "Carousel"}
+            </span>
+          )}
+        </div>
       )}
 
       <div className="ligo-feed-actions">

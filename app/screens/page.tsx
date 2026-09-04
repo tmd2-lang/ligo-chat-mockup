@@ -33,7 +33,7 @@ export default function RealScreens() {
   /** Which screen occupies the left slot — the actual proposal. */
   const [leftSlot, setLeftSlot] = useState<"feed" | "chat">("feed");
   const [season, setSeason] = useState<Season>("rush");
-  const [dataSource, setDataSource] = useState<"authored" | "real">("authored");
+  const [dataSource, setDataSource] = useState<"authored" | "real">("real");
   /* Follow state lives here so the club sheet's Follow button and the
      feed's Following tab are the same thing, not two mock states. */
   const [following, setFollowing] = useState<Set<string>>(
@@ -140,7 +140,7 @@ export default function RealScreens() {
                       { id: "authored", label: "Written by me" },
                       { id: "real", label: "Real sources" },
                     ]}
-                    hint="Real pulls from a live snapshot of The Hoya's API and the Georgetown athletics calendar. Season and posting rules don't apply to it — it is what it is."
+                    hint="Real combines eight club Instagram accounts with The Hoya, The Voice, athletics, and the Georgetown calendar. Season and posting rules don't apply to it — it is what it is."
                   />
 
                   {dataSource === "real" && <RealDataNote />}
@@ -327,15 +327,16 @@ function RealDataNote() {
           scores and ticket links. Zero artwork.
         </li>
         <li>
-          <b>Instagram</b> — not fetchable. Blocked on Meta approving{" "}
-          <code>instagram_business_basic</code>. Shown in its real shape: four
-          facts, no caption, no photo.
+          <b>Instagram</b> — {s.bySource.instagram} real posts from eight public
+          professional club accounts through Business Discovery. The clubs did
+          not connect to Ligo; 124 of 153 known handles passed the same access
+          test.
         </li>
       </ul>
       <p className="sc-realnote-punch">
         {s.imagePct}% have an image, {s.prosePct}% have real body copy — much
-        better than the Hoya alone. Athletics and Instagram are the two sources
-        with no art at all; those are what the Midjourney fallback is for.
+        better than the Hoya alone. Instagram brings its real flyer art; the
+        remaining no-art case is mostly athletics.
       </p>
       <p className="sc-realnote-punch">
         The calendar alone is {s.bySource.calendar} of {s.total} items, so it

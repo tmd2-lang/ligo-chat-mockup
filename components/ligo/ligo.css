@@ -194,6 +194,16 @@
   color: #a4a4a4;
 }
 
+.ligo-feed-avatar {
+  width: 36px;
+  height: 36px;
+  flex: 0 0 36px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid #ebebeb;
+  background: #f6f5f4;
+}
+
 /* System-generated activity reads as a log line, not prose. */
 .ligo-feed-activity {
   margin: 0;
@@ -223,6 +233,24 @@
   object-fit: cover;
   border-radius: 14px;
   display: block;
+}
+
+.ligo-feed-media {
+  position: relative;
+}
+
+.ligo-feed-media-badge {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  padding: 5px 9px;
+  border-radius: 999px;
+  color: #fff;
+  background: rgba(23, 23, 23, 0.72);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
+  backdrop-filter: blur(8px);
+  font-size: 11px;
+  font-weight: 650;
 }
 
 .ligo-feed-actions {

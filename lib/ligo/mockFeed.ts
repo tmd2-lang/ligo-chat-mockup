@@ -46,11 +46,17 @@ export type FeedPost = {
   /** Verified orgs get the check. */
   verified?: boolean;
   timeAgo: string;
+  /** Source timestamp retained for mixing independently ingested feeds. */
+  publishedAt?: string;
   body: string;
   /** Optional headline above the body, for news-shaped posts. */
   title?: string;
   image?: string;
   imageAlt?: string;
+  /** Optional publisher profile image supplied by an ingested source. */
+  avatar?: string;
+  /** Lets image cards distinguish a Reel from a carousel at a glance. */
+  mediaType?: "IMAGE" | "VIDEO" | "CAROUSEL_ALBUM";
   /** Inline call to action, e.g. an RSVP or a donation link. */
   action?: string;
   /** Canonical source URL. Present on everything ingested; opens out. */
